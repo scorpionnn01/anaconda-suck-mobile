@@ -696,9 +696,10 @@
             setTimeout(() => {
                 if (gameState !== 'GAMEOVER') return;
                 finger.style.display = 'block';
+                // === CHANGED TEXT HERE ===
                 content.innerHTML = `
                 <div class="subtitle-card" style="border-color:#ff3333; margin-top:8px;">
-                  <p class="text-main" style="font-size:clamp(18px,4.5vw,28px);">Anaconda is the eternal villain of Sucks' life</p>
+                  <p class="text-main" style="font-size:clamp(18px,4.5vw,28px);">sorri babu 😡🖕</p>
                 </div>
               `;
 
@@ -862,7 +863,7 @@
                 for (let j = 0; j < anaconda.segments.length; j++) {
                     let seg = anaconda.segments[j];
                     if (Math.hypot(b.x - seg.x, b.y - seg.y) < (anaconda.scaleSize + (b.type === 'missile' ? 18 :
-                        0))) {
+                            0))) {
                         anaconda.hp -= b.damage;
                         document.getElementById('bossHpDisplay').innerText = Math.max(0, anaconda.hp);
 
