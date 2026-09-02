@@ -138,7 +138,6 @@
             transform: scale(0.92);
         }
 
-        /* Touch hint (fades) */
         #touchHint {
             position: absolute;
             bottom: 80px;
@@ -185,7 +184,7 @@
             background: radial-gradient(circle, rgba(255, 80, 30, 0.08) 0%, transparent 70%);
         }
 
-        /* ========== OVERLAY – CINEMATIC INTRO ========== */
+        /* ===== OVERLAY – INTRO & WARNING ===== */
         #overlay {
             position: absolute;
             top: 0;
@@ -214,14 +213,11 @@
             pointer-events: none;
         }
         @keyframes bgScroll {
-            0% {
-                transform: translate(0, 0);
-            }
-            100% {
-                transform: translate(40px, 40px);
-            }
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
         }
 
+        /* Intro title styles */
         .intro-title {
             font-size: clamp(48px, 14vw, 100px);
             font-weight: 900;
@@ -229,7 +225,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: none;
             filter: drop-shadow(0 0 30px rgba(255, 200, 0, 0.3));
             letter-spacing: 6px;
             text-transform: uppercase;
@@ -238,13 +233,8 @@
             animation: titlePulse 3s ease-in-out infinite;
         }
         @keyframes titlePulse {
-            0%,
-            100% {
-                filter: drop-shadow(0 0 20px rgba(255, 200, 0, 0.2));
-            }
-            50% {
-                filter: drop-shadow(0 0 50px rgba(255, 200, 0, 0.6));
-            }
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 200, 0, 0.2)); }
+            50% { filter: drop-shadow(0 0 50px rgba(255, 200, 0, 0.6)); }
         }
         .intro-sub {
             font-size: clamp(18px, 4.5vw, 36px);
@@ -327,12 +317,8 @@
             animation: btnGlow 2s infinite alternate;
         }
         @keyframes btnGlow {
-            0% {
-                box-shadow: 0 0 20px rgba(255, 68, 0, 0.3);
-            }
-            100% {
-                box-shadow: 0 0 60px rgba(255, 200, 0, 0.7);
-            }
+            0% { box-shadow: 0 0 20px rgba(255, 68, 0, 0.3); }
+            100% { box-shadow: 0 0 60px rgba(255, 200, 0, 0.7); }
         }
         .actionBtn:active {
             transform: scale(0.92);
@@ -357,7 +343,6 @@
             border-color: #fff;
         }
 
-        /* Finger icon remains */
         #fingerIcon {
             font-size: clamp(60px, 18vw, 100px);
             margin: 12px 0;
@@ -367,70 +352,94 @@
             z-index: 2;
         }
         @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.22) rotate(-6deg);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.22) rotate(-6deg); }
+            100% { transform: scale(1); }
         }
 
-        /* Responsive tweaks */
+        /* ===== WARNING OVERLAY (separate) ===== */
+        #warningOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(ellipse at center, #2a0000 0%, #0a0000 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 35;
+            text-align: center;
+            padding: 30px;
+            pointer-events: none;
+            animation: warningFadeIn 0.4s ease;
+        }
+        @keyframes warningFadeIn {
+            0% { opacity: 0; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        #warningOverlay .warning-title {
+            font-size: clamp(50px, 12vw, 90px);
+            font-weight: 900;
+            color: #ff1111;
+            text-shadow: 0 0 40px #ff0000, 0 0 80px #aa0000, 0 0 120px #660000;
+            letter-spacing: 8px;
+            animation: warningPulse 0.8s infinite alternate;
+            margin-bottom: 10px;
+        }
+        @keyframes warningPulse {
+            0% { text-shadow: 0 0 30px #ff0000, 0 0 60px #aa0000; }
+            100% { text-shadow: 0 0 60px #ff4444, 0 0 120px #ff0000, 0 0 200px #880000; }
+        }
+        #warningOverlay .warning-quote {
+            font-size: clamp(24px, 5vw, 44px);
+            color: #ff8866;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 0 0 30px rgba(255, 50, 0, 0.5);
+            margin: 10px 0;
+        }
+        #warningOverlay .warning-sub {
+            font-size: clamp(16px, 3vw, 26px);
+            color: #cc9999;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+        /* Floating embers (CSS particles) */
+        .ember {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ff4400;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #ff4400;
+            animation: rise linear infinite;
+            pointer-events: none;
+        }
+        @keyframes rise {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        /* Responsive */
         @media (max-width: 480px) {
-            #weaponHUD {
-                bottom: 12px;
-                left: 10px;
-                padding: 4px 10px;
-                font-size: 11px;
-            }
-            #healthHUD {
-                top: 10px;
-                right: 10px;
-                padding: 5px 10px;
-                font-size: 11px;
-            }
-            #levelHUD {
-                top: 8px;
-                font-size: 24px;
-            }
-            #fullscreenBtn {
-                bottom: 12px;
-                right: 10px;
-                padding: 4px 10px;
-                font-size: 10px;
-            }
-            #scoreHUD {
-                top: 60px;
-                left: 10px;
-                font-size: 12px;
-                padding: 2px 10px;
-            }
-            #comboHUD {
-                bottom: 60px;
-                font-size: 20px;
-            }
+            #weaponHUD { bottom: 12px; left: 10px; padding: 4px 10px; font-size: 11px; }
+            #healthHUD { top: 10px; right: 10px; padding: 5px 10px; font-size: 11px; }
+            #levelHUD { top: 8px; font-size: 24px; }
+            #fullscreenBtn { bottom: 12px; right: 10px; padding: 4px 10px; font-size: 10px; }
+            #scoreHUD { top: 60px; left: 10px; font-size: 12px; padding: 2px 10px; }
+            #comboHUD { bottom: 60px; font-size: 20px; }
         }
         @media (orientation: landscape) and (max-height: 500px) {
-            #touchHint {
-                bottom: 50px;
-                font-size: 12px;
-                padding: 4px 14px;
-            }
-            #healthHUD {
-                font-size: 11px;
-                padding: 4px 10px;
-            }
-            #weaponHUD {
-                font-size: 11px;
-                padding: 4px 10px;
-            }
-            .intro-desc {
-                padding: 10px 16px;
-                margin: 8px auto;
-            }
+            #touchHint { bottom: 50px; font-size: 12px; padding: 4px 14px; }
+            #healthHUD { font-size: 11px; padding: 4px 10px; }
+            #weaponHUD { font-size: 11px; padding: 4px 10px; }
+            .intro-desc { padding: 10px 16px; margin: 8px auto; }
         }
     </style>
 </head>
@@ -450,7 +459,7 @@
     <div id="touchHint">👆 <span>Touch & Drag</span> to move · Hold to <span>Fire</span></div>
     <div id="touchRing"></div>
 
-    <!-- Overlay (Intro) -->
+    <!-- INTRO OVERLAY -->
     <div id="overlay">
         <div id="overlayContent">
             <div class="intro-title">WELCOME</div>
@@ -470,6 +479,14 @@
                 <button class="actionBtn" onclick="startGame()">▶ START</button>
             </div>
         </div>
+    </div>
+
+    <!-- WARNING OVERLAY (hidden by default) -->
+    <div id="warningOverlay">
+        <div class="warning-title">⚠️ WARNING</div>
+        <div class="warning-quote">"There is no victory against Anaconda Khan."</div>
+        <div class="warning-sub">Prepare for eternal struggle...</div>
+        <!-- Embers will be injected by JavaScript -->
     </div>
 
     <canvas id="gameCanvas"></canvas>
@@ -602,7 +619,6 @@
         window.addEventListener('keydown', e => { keys[e.code] = true; });
         window.addEventListener('keyup', e => { keys[e.code] = false; });
 
-        // Touch / Mouse
         let isTouching = false;
         let touchX = 0,
             touchY = 0;
@@ -784,7 +800,6 @@
                 anaconda.segments.push({ x: anaconda.x, y: anaconda.y - i * 14 });
             }
 
-            // Reset combo (only on level change)
             combo = 0;
             updateComboDisplay();
 
@@ -798,6 +813,48 @@
         // MENU / OVERLAY
         // ============================================================
         function startGame() {
+            // Hide main menu
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('fingerIcon').style.display = 'none';
+
+            // Show warning overlay with heavy graphics
+            const warningOverlay = document.getElementById('warningOverlay');
+            warningOverlay.style.display = 'flex';
+
+            // Generate floating embers
+            const emberContainer = warningOverlay;
+            // Remove existing embers
+            emberContainer.querySelectorAll('.ember').forEach(el => el.remove());
+            for (let i = 0; i < 30; i++) {
+                const ember = document.createElement('div');
+                ember.className = 'ember';
+                ember.style.left = Math.random() * 100 + '%';
+                ember.style.animationDuration = (4 + Math.random() * 6) + 's';
+                ember.style.animationDelay = (Math.random() * 5) + 's';
+                ember.style.width = (4 + Math.random() * 8) + 'px';
+                ember.style.height = ember.style.width;
+                ember.style.background = `hsl(${10 + Math.random()*20}, 100%, ${50 + Math.random()*30}%)`;
+                emberContainer.appendChild(ember);
+            }
+
+            // After 2 seconds, start the actual game
+            setTimeout(() => {
+                warningOverlay.style.display = 'none';
+                // Reset game state
+                gameState = 'PLAYING';
+                player.hp = player.maxHp;
+                score = 0;
+                document.getElementById('scoreDisplay').innerText = '0';
+                startHorrorBGM();
+                initLevel(1);
+                const hint = document.getElementById('touchHint');
+                if (hint) { hint.style.opacity = '0';
+                    setTimeout(() => { if (hint) hint.style.display = 'none'; }, 1000); }
+            }, 2000);
+        }
+
+        function restartGame() {
+            // Go directly to game (skip warning)
             gameState = 'PLAYING';
             player.hp = player.maxHp;
             score = 0;
@@ -811,16 +868,12 @@
                 setTimeout(() => { if (hint) hint.style.display = 'none'; }, 1000); }
         }
 
-        function restartGame() {
-            startGame();
-        }
-
         function exitGame() {
             window.location.reload();
         }
 
         // ============================================================
-        // GAME OVER (modified with new text)
+        // GAME OVER
         // ============================================================
         function gameOver() {
             gameState = 'GAMEOVER';
@@ -913,14 +966,12 @@
             if (gameState !== 'PLAYING') return;
             player.y = height - 80;
 
-            // Keyboard
             if (keys['KeyA'] || keys['ArrowLeft']) player.x -= player.speed;
             if (keys['KeyD'] || keys['ArrowRight']) player.x += player.speed;
             player.x = Math.max(60, Math.min(width - 60, player.x));
 
             let wpn = getWeaponDetails(currentLevel);
 
-            // FIRE
             let shouldFire = false;
             if (isTouching && touchActive) shouldFire = true;
             if (keys['Space']) shouldFire = true;
@@ -951,7 +1002,6 @@
                 player.fireCooldown = wpn.rate;
             }
 
-            // ---- BOSS AI ----
             let linearityFactor = Math.max(0.05, 1 - ((currentLevel - 1) * 0.1));
             anaconda.swirlAngle += (0.015 + (currentLevel * 0.002)) * linearityFactor;
             let targetX = (width / 2) + Math.sin(anaconda.swirlAngle) * anaconda.swirlRadius;
@@ -959,7 +1009,6 @@
                 targetX += (player.x - targetX) * Math.min(0.85, 0.2 + (currentLevel * 0.06));
             }
 
-            // Rage mode: when HP < 30%
             if (anaconda.hp / anaconda.maxHp < 0.3) {
                 anaconda.rage = true;
                 anaconda.speedY = 0.35 + (currentLevel * 0.05);
@@ -971,11 +1020,10 @@
             anaconda.y += anaconda.speedY;
             anaconda.x += (targetX - anaconda.x) * 0.08;
 
-            // Fireballs (level 5+)
             if (currentLevel >= 5) {
                 anaconda.fireTimer++;
                 let fireInterval = Math.max(35, 100 - (currentLevel * 6));
-                if (anaconda.rage) fireInterval *= 0.7; // more frequent in rage
+                if (anaconda.rage) fireInterval *= 0.7;
                 if (anaconda.fireTimer >= fireInterval) {
                     anaconda.fireTimer = 0;
                     playSound('fireball');
@@ -992,7 +1040,6 @@
                 }
             }
 
-            // Segment physics
             anaconda.segments[0] = { x: anaconda.x, y: anaconda.y };
             for (let i = 1; i < anaconda.length; i++) {
                 let segPrev = anaconda.segments[i - 1];
@@ -1007,14 +1054,12 @@
                 }
             }
 
-            // Collision: boss reaches player
             if (anaconda.y >= height - 110 || Math.hypot(anaconda.x - player.x, anaconda.y - player.y) < (anaconda
                     .scaleSize + 25)) {
                 gameOver();
                 return;
             }
 
-            // ---- Enemy fireballs vs player ----
             for (let i = enemyFireballs.length - 1; i >= 0; i--) {
                 let fb = enemyFireballs[i];
                 fb.x += fb.vx;
@@ -1035,7 +1080,6 @@
                             radius: Math.random() * 4 + 2
                         });
                     }
-                    // Screen shake
                     screenShake.intensity = 6;
                     enemyFireballs.splice(i, 1);
                     if (player.hp <= 0) { gameOver(); return; }
@@ -1046,7 +1090,6 @@
                 }
             }
 
-            // ---- Bullets vs boss ----
             for (let i = bullets.length - 1; i >= 0; i--) {
                 let b = bullets[i];
                 b.x += b.vx;
@@ -1057,7 +1100,6 @@
                     if (Math.hypot(b.x - seg.x, b.y - seg.y) < (anaconda.scaleSize + (b.type === 'missile' ? 18 :
                             0))) {
                         let damage = b.damage;
-                        // Combo multiplier: each combo adds +5% damage, cap at +100%
                         let comboMult = 1 + Math.min(1, combo * 0.05);
                         damage = Math.floor(damage * comboMult);
                         anaconda.hp -= damage;
@@ -1093,9 +1135,7 @@
                 if (hit) {
                     bullets.splice(i, 1);
                     if (anaconda.hp <= 0) {
-                        // Boss defeated!
                         playSound('explosion');
-                        // Big explosion particles
                         for (let p = 0; p < 40; p++) {
                             particles.push({
                                 x: anaconda.x,
@@ -1108,7 +1148,6 @@
                             });
                         }
                         screenShake.intensity = 20;
-                        // Level up
                         setTimeout(() => {
                             initLevel(currentLevel + 1);
                         }, 300);
@@ -1118,7 +1157,6 @@
                 if (b.y < 0 || b.x < 0 || b.x > width) bullets.splice(i, 1);
             }
 
-            // ---- Animations ----
             for (let i = impactAnimations.length - 1; i >= 0; i--) {
                 let anim = impactAnimations[i];
                 anim.radius += 2.5;
@@ -1133,7 +1171,6 @@
                 if (p.life <= 0) particles.splice(i, 1);
             }
 
-            // ---- Screen shake decay ----
             if (screenShake.intensity > 0) {
                 screenShake.intensity *= 0.9;
                 if (screenShake.intensity < 0.1) screenShake.intensity = 0;
@@ -1182,7 +1219,6 @@
 
         function draw() {
             ctx.save();
-            // Apply screen shake
             if (screenShake.intensity > 0.5) {
                 ctx.translate(screenShake.x, screenShake.y);
             }
@@ -1190,7 +1226,6 @@
             drawTempleBG();
 
             if (gameState === 'PLAYING') {
-                // ---- Boss ----
                 for (let i = anaconda.segments.length - 1; i >= 0; i--) {
                     let seg = anaconda.segments[i];
                     let radius = Math.max(12, anaconda.scaleSize - i * 0.25);
@@ -1207,7 +1242,6 @@
                             '#1a0033';
                         innerColor = '#ff00aa'; }
 
-                    // Rage glow
                     if (anaconda.rage) {
                         ctx.shadowColor = '#ff0000';
                         ctx.shadowBlur = 30;
@@ -1239,7 +1273,6 @@
                     }
 
                     if (i === 0) {
-                        // Eyes
                         ctx.fillStyle = anaconda.rage ? '#ff0000' : (currentLevel >= 5 ? '#ffea00' : '#ff2200');
                         ctx.shadowColor = '#ff0000';
                         ctx.shadowBlur = 20;
@@ -1248,7 +1281,6 @@
                         ctx.arc(radius * 0.45, -6, 6, 0, Math.PI * 2);
                         ctx.fill();
                         ctx.shadowBlur = 0;
-                        // Horns
                         ctx.fillStyle = currentLevel >= 5 ? '#ff5500' : '#ffcc00';
                         ctx.beginPath();
                         ctx.moveTo(-radius * 0.4, -radius);
@@ -1258,7 +1290,6 @@
                         ctx.lineTo(radius * 0.95, -radius - (25 + currentLevel * 3));
                         ctx.lineTo(radius * 0.1, -radius);
                         ctx.fill();
-                        // Fangs
                         ctx.fillStyle = '#ffffff';
                         ctx.beginPath();
                         ctx.moveTo(-9, radius);
@@ -1272,7 +1303,6 @@
                     ctx.restore();
                 }
 
-                // ---- Fireballs ----
                 enemyFireballs.forEach(fb => {
                     ctx.save();
                     ctx.fillStyle = currentLevel >= 5 ? '#ff3300' : '#ff5500';
@@ -1289,7 +1319,6 @@
                     ctx.restore();
                 });
 
-                // ---- Bullets ----
                 bullets.forEach(b => {
                     ctx.save();
                     if (b.type === 'missile') {
@@ -1308,7 +1337,6 @@
                     ctx.restore();
                 });
 
-                // ---- Impact animations ----
                 impactAnimations.forEach(anim => {
                     ctx.save();
                     ctx.strokeStyle = anim.color;
@@ -1320,7 +1348,6 @@
                     ctx.restore();
                 });
 
-                // ---- Particles ----
                 particles.forEach(p => {
                     ctx.fillStyle = p.color;
                     ctx.beginPath();
@@ -1328,7 +1355,6 @@
                     ctx.fill();
                 });
 
-                // ---- Player / Gun ----
                 ctx.save();
                 ctx.translate(player.x, player.y);
 
@@ -1383,7 +1409,7 @@
                 ctx.restore();
             }
 
-            ctx.restore(); // screen shake end
+            ctx.restore();
 
             requestAnimationFrame(() => {
                 update();
