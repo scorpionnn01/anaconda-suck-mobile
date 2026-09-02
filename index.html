@@ -3,79 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Anaconda and Suck - Mobile Edition</title>
+<title>Anaconda and Suck Mobile</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
-  body, html { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Segoe UI', Arial, sans-serif; }
-  #gameCanvas { display: block; width: 100vw; height: 100vh; position: absolute; top:0; left:0; z-index: 1; }
+  * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; -webkit-user-select: none; user-select: none; }
+  body, html { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
+  #gameCanvas { display: block; width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
   
-  /* HUD Elements */
-  #levelHUD { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 10; font-size: 28px; font-weight: 900; color: rgba(255, 255, 255, 0.3); font-family: 'Courier New', monospace; pointer-events: none; letter-spacing: 2px; }
-  #weaponHUD { position: absolute; bottom: 15px; left: 15px; z-index: 10; font-family: 'Courier New', monospace; font-size: 12px; color: #00ffcc; background: rgba(0,0,0,0.7); padding: 6px 10px; border-left: 3px solid #00ffcc; border-radius: 4px; pointer-events: none; }
-  #healthHUD { position: absolute; top: 15px; right: 15px; z-index: 10; font-family: 'Courier New', monospace; font-size: 12px; color: #fff; text-align: right; background: rgba(0,0,0,0.7); padding: 6px 10px; border-right: 3px solid #ff4444; border-radius: 4px; pointer-events: none; }
+  /* Top HUD */
+  #hud { position: absolute; top: 10px; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 15px; color: #fff; font-weight: bold; font-size: 14px; z-index: 10; pointer-events: none; }
 
-  /* MOBILE SHOOT BUTTON - Dedicated Bottom Touch Center */
-  #shootBtn {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90px;
-    height: 90px;
-    background: radial-gradient(circle, #ff2222 0%, #660000 100%);
-    border: 3px solid #ffd700;
-    border-radius: 50%;
-    color: #ffffff;
-    font-size: 20px;
-    font-weight: 900;
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.8), inset 0 0 10px rgba(255,255,255,0.5);
-    z-index: 20;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    letter-spacing: 1px;
-    font-family: monospace;
-  }
-  #shootBtn:active {
-    background: radial-gradient(circle, #ffd700 0%, #ff0000 100%);
-    box-shadow: 0 0 35px #ffd700;
-    transform: translateX(-50%) scale(0.92);
-  }
+  /* Touch Controls Overlay for Mobile */
+  #controls { position: absolute; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; z-index: 20; }
+  .touch-btn { width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2); border: 2px solid #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 22px; font-weight: bold; }
+  .touch-btn:active { background: rgba(255, 255, 255, 0.6); transform: scale(0.95); }
+  #fireBtn { width: 90px; height: 90px; background: rgba(255, 0, 0, 0.5); border-color: #ff4444; color: #fff; }
+  #fireBtn:active { background: rgba(255, 0, 0, 0.9); }
 
-  /* Overlay Screens */
-  #overlay { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle, rgba(20,0,0,0.96) 0%, rgba(0,0,0,0.99) 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 30; text-align: center; padding: 20px; }
-  .title-glow { font-size: 36px; color: #ff1a1a; text-shadow: 0 0 20px #ff0000; font-weight: 900; text-transform: uppercase; margin-bottom: 15px; }
-  .subtitle-card { background: rgba(255, 0, 0, 0.1); border: 1px solid rgba(255, 0, 0, 0.4); padding: 12px; border-radius: 8px; margin-bottom: 20px; max-width: 90%; }
-  .text-main { font-size: 15px; color: #ffcccc; font-weight: bold; }
-
-  .actionBtn { padding: 14px 28px; font-size: 18px; background: linear-gradient(135deg, #ff1a1a, #800000); color: #fff; border: 2px solid #ffd700; font-weight: bold; border-radius: 6px; box-shadow: 0 0 20px rgba(255,0,0,0.6); margin: 5px; }
-  #fingerIcon { font-size: 70px; margin: 10px 0; text-shadow: 0 0 25px #ff0000; animation: pulse 1s infinite ease-in-out; display: none; }
-  @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2) rotate(-8deg); } 100% { transform: scale(1); } }
+  /* Overlay */
+  #overlay { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: #111; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 30; text-align: center; }
+  #startBtn { padding: 15px 30px; font-size: 20px; background: #ff2222; color: #fff; border: none; border-radius: 8px; font-weight: bold; margin-top: 20px; }
 </style>
 </head>
 <body>
 
-<div id="levelHUD">LEVEL 1</div>
-<div id="weaponHUD">WEAPON: <span id="weaponDisplay" style="color: #fff;">AK-47</span></div>
-<div id="healthHUD">
-  <div>SUCKS HP: <span id="playerHpDisplay" style="color: #00ffcc;">100</span></div>
-  <div>ANACONDA HP: <span id="bossHpDisplay" style="color: #ff4444;">350</span></div>
+<div id="hud">
+  <div>LEVEL: <span id="lvl">1</span></div>
+  <div>ANACONDA: <span id="hp">350</span></div>
 </div>
 
-<!-- Touch Fire Pad for Mobile -->
-<div id="shootBtn">FIRE</div>
-
 <div id="overlay">
-  <div id="overlayContent">
-    <h1 class="title-glow">ANACONDA AND SUCK</h1>
-    <div class="subtitle-card">
-      <p class="text-main">Tilt your phone left/right to steer Suck.<br>Tap the RED FIRE button to shoot!</p>
-    </div>
+  <h1>ANACONDA AND SUCK</h1>
+  <p style="margin-top:10px; color:#aaa;">Use On-Screen Buttons OR Tilt Phone</p>
+  <button id="startBtn" onclick="initGame()">PLAY NOW</button>
+</div>
+
+<div id="controls" style="display:none;">
+  <div style="display:flex; gap:15px;">
+    <div class="touch-btn" id="leftBtn">◀</div>
+    <div class="touch-btn" id="rightBtn">▶</div>
   </div>
-  <div id="fingerIcon">🖕</div>
-  <div id="menuBtnContainer">
-    <button class="actionBtn" onclick="enableGyroAndStart()">START GAME</button>
-  </div>
+  <div class="touch-btn" id="fireBtn">🔥</div>
 </div>
 
 <canvas id="gameCanvas"></canvas>
@@ -92,367 +59,131 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
-// Mobile Tilt Handling
-let tiltX = 0;
-function handleOrientation(event) {
-  let gamma = event.gamma; // Left-to-right tilt angle (-90 to 90)
-  if (gamma !== null && gamma !== undefined) {
-    if (Math.abs(gamma) > 2) {
-      tiltX = (gamma / 20) * 12; // Smooth tilt sensitivity multiplier
-    } else {
-      tiltX = 0;
-    }
-  }
-}
-
-function enableGyroAndStart() {
-  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-    DeviceOrientationEvent.requestPermission()
-      .then(permissionState => {
-        if (permissionState === 'granted') {
-          window.addEventListener('deviceorientation', handleOrientation, true);
-        }
-        startGame();
-      })
-      .catch(() => startGame());
-  } else {
-    window.addEventListener('deviceorientation', handleOrientation, true);
-    startGame();
-  }
-}
-
-// Touch Fire Listener
-let isFiringTouch = false;
-const shootBtn = document.getElementById('shootBtn');
-
-shootBtn.addEventListener('touchstart', (e) => { e.preventDefault(); isFiringTouch = true; }, { passive: false });
-shootBtn.addEventListener('touchend', (e) => { e.preventDefault(); isFiringTouch = false; }, { passive: false });
-shootBtn.addEventListener('mousedown', () => { isFiringTouch = true; });
-shootBtn.addEventListener('mouseup', () => { isFiringTouch = false; });
-
-// Keyboard Controls Fallback
-const keys = {};
-window.addEventListener('keydown', e => { keys[e.code] = true; });
-window.addEventListener('keyup', e => { keys[e.code] = false; });
-
-// Audio Synth System
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-let bgmInterval = null;
-
-function startHorrorBGM() {
-  if (bgmInterval) clearInterval(bgmInterval);
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  let beat = 0;
-  bgmInterval = setInterval(() => {
-    if (gameState !== 'PLAYING') return;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    const droneNotes = [45, 48.5, 42, 38];
-    osc.frequency.setValueAtTime(droneNotes[beat % droneNotes.length], audioCtx.currentTime);
-    osc.type = 'sawtooth';
-    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 1.3);
-    beat++;
-  }, 900);
-}
-
-function stopBGM() {
-  if (bgmInterval) clearInterval(bgmInterval);
-}
-
-function playSound(type) {
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  if (type === 'gun') {
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(160, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.09);
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.09);
-  } else if (type === 'bazooka') {
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(100, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.3);
-    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-  } else if (type === 'hit') {
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.12);
-    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
-  }
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.5);
-}
-
-// Game Loop State
-let gameState = 'MENU';
-let currentLevel = 1;
-let player = { x: width / 2, y: height - 120, hp: 100, maxHp: 100, speed: 8, fireCooldown: 0 };
+let player = { x: 0, y: 0, speed: 7 };
 let bullets = [];
-let enemyFireballs = [];
-let particles = [];
-let impactAnimations = [];
+let anaconda = { x: 0, y: 50, hp: 350, maxHp: 350, speedY: 0.3, dir: 1 };
+let gameActive = false;
 
-let anaconda = {
-  x: width / 2, y: 60, hp: 350, maxHp: 350, speedY: 0.18, segments: [], length: 20,
-  swirlAngle: 0, swirlRadius: 280, scaleSize: 20, spikes: 1, colorTheme: 'green', fireTimer: 0
-};
+// Control States
+let moveLeft = false;
+let moveRight = false;
+let isShooting = false;
+let lastShootTime = 0;
 
-function getWeaponDetails(lvl) {
-  if (lvl === 1) return { name: 'AK-47', damage: 18, rate: 14, type: 'bullet', flameColor: '#ffcc00' };
-  if (lvl === 2) return { name: 'Tactical SMG', damage: 28, rate: 11, type: 'bullet', flameColor: '#00ffcc' };
-  if (lvl === 3) return { name: 'Heavy Assault Rifle', damage: 45, rate: 9, type: 'bullet', flameColor: '#ff5500' };
-  if (lvl === 4) return { name: 'Gatling Cannon', damage: 65, rate: 6, type: 'bullet', flameColor: '#00ffff' };
-  return { name: `Doom Bazooka MK-${lvl - 4}`, damage: 120 + (lvl - 5) * 100, rate: 18, type: 'missile', flameColor: '#ff2200' };
+// Setup Touch Buttons directly
+function setupTouchButton(id, onPress, onRelease) {
+  const btn = document.getElementById(id);
+  btn.addEventListener('touchstart', (e) => { e.preventDefault(); onPress(); }, {passive: false});
+  btn.addEventListener('touchend', (e) => { e.preventDefault(); onRelease(); }, {passive: false});
+  btn.addEventListener('mousedown', onPress);
+  btn.addEventListener('mouseup', onRelease);
 }
 
-function initLevel(lvl) {
-  currentLevel = lvl;
-  player.x = width / 2;
-  anaconda.x = width / 2;
-  anaconda.y = 60;
-  anaconda.swirlAngle = 0;
-  
-  let wpn = getWeaponDetails(lvl);
-  anaconda.maxHp = 350 + (lvl - 1) * 260;
-  anaconda.hp = anaconda.maxHp;
-  anaconda.speedY = 0.2 + (lvl * 0.04); 
-  
-  anaconda.length = Math.min(28, 16 + Math.floor(lvl * 1.2));
-  anaconda.scaleSize = Math.min(26, 16 + Math.floor(lvl * 0.6));
-  
-  let linearityFactor = Math.max(0.05, 1 - ((lvl - 1) * 0.1));
-  anaconda.swirlRadius = Math.max(20, (width * 0.35) * linearityFactor);
+setupTouchButton('leftBtn', () => moveLeft = true, () => moveLeft = false);
+setupTouchButton('rightBtn', () => moveRight = true, () => moveRight = false);
+setupTouchButton('fireBtn', () => isShooting = true, () => isShooting = false);
 
-  anaconda.segments = [];
-  for (let i = 0; i < anaconda.length; i++) {
-    anaconda.segments.push({ x: anaconda.x, y: anaconda.y - i * 14 });
+// Gyroscope Motion Backup
+window.addEventListener('deviceorientation', (e) => {
+  if (e.gamma) {
+    if (e.gamma < -5) { moveLeft = true; moveRight = false; }
+    else if (e.gamma > 5) { moveRight = true; moveLeft = false; }
+    else { moveLeft = false; moveRight = false; }
+  }
+});
+
+function initGame() {
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('controls').style.display = 'flex';
+  
+  // Try requesting Gyro permissions explicitly on iOS
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission().catch(() => {});
   }
 
-  document.getElementById('levelHUD').innerText = `LEVEL ${currentLevel}`;
-  document.getElementById('weaponDisplay').innerText = wpn.name;
-  document.getElementById('bossHpDisplay').innerText = anaconda.hp;
-  document.getElementById('playerHpDisplay').innerText = player.hp;
-}
-
-function startGame() {
-  gameState = 'PLAYING';
-  player.hp = player.maxHp;
-  document.getElementById('overlay').style.display = 'none';
-  document.getElementById('shootBtn').style.display = 'flex';
-  startHorrorBGM();
-  initLevel(1);
-}
-
-function gameOver() {
-  gameState = 'GAMEOVER';
-  stopBGM();
-  document.getElementById('shootBtn').style.display = 'none';
-  const overlay = document.getElementById('overlay');
-  const content = document.getElementById('overlayContent');
-  const finger = document.getElementById('fingerIcon');
-  const btnContainer = document.getElementById('menuBtnContainer');
-
-  overlay.style.display = 'flex';
-  finger.style.display = 'none';
-  content.innerHTML = `<h1 class="title-glow">YOU LOST</h1>`;
-
-  setTimeout(() => {
-    if (gameState !== 'GAMEOVER') return;
-    finger.style.display = 'block';
-    content.innerHTML = `<div class="subtitle-card"><p class="text-main">Anaconda is the eternal villain of Sucks' life</p></div>`;
-    
-    setTimeout(() => {
-      if (gameState !== 'GAMEOVER') return;
-      finger.style.display = 'none';
-      content.innerHTML = `<h1 class="title-glow">GAME OVER</h1>`;
-      btnContainer.innerHTML = `<button class="actionBtn" onclick="location.reload()">REPLAY</button>`;
-    }, 2500);
-  }, 2000);
+  player.x = width / 2;
+  player.y = height - 120;
+  anaconda.x = width / 2;
+  gameActive = true;
+  gameLoop();
 }
 
 function update() {
-  if (gameState !== 'PLAYING') return;
+  if (!gameActive) return;
 
-  player.y = height - 120;
+  // Player Movement
+  if (moveLeft && player.x > 30) player.x -= player.speed;
+  if (moveRight && player.x < width - 30) player.x += player.speed;
 
-  // Steering via Gyroscope / Tilt OR Touch / Keyboard
-  player.x += tiltX;
-  if (keys['KeyA'] || keys['ArrowLeft']) player.x -= player.speed;
-  if (keys['KeyD'] || keys['ArrowRight']) player.x += player.speed;
-
-  if (player.x < 30) player.x = 30;
-  if (player.x > width - 30) player.x = width - 30;
-
-  let wpn = getWeaponDetails(currentLevel);
-
-  // Weapon Firing
-  if (player.fireCooldown > 0) player.fireCooldown--;
-  if ((keys['Space'] || isFiringTouch) && player.fireCooldown <= 0) {
-    if (wpn.type === 'missile') {
-      playSound('bazooka');
-      bullets.push({ x: player.x, y: player.y - 40, vx: 0, vy: -16, type: 'missile', damage: wpn.damage, flameColor: wpn.flameColor });
-    } else {
-      playSound('gun');
-      let spread = (Math.random() - 0.5) * 3;
-      bullets.push({ x: player.x + spread, y: player.y - 40, vx: spread * 0.2, vy: -24, type: 'bullet', damage: wpn.damage, flameColor: wpn.flameColor });
-    }
-    player.fireCooldown = wpn.rate;
+  // Shooting Mechanism
+  const now = Date.now();
+  if (isShooting && now - lastShootTime > 150) {
+    bullets.push({ x: player.x, y: player.y - 30, vy: -12 });
+    lastShootTime = now;
   }
 
-  // Anaconda Movement
-  let linearityFactor = Math.max(0.05, 1 - ((currentLevel - 1) * 0.1));
-  anaconda.swirlAngle += 0.02 * linearityFactor; 
-  let targetX = (width / 2) + Math.sin(anaconda.swirlAngle) * anaconda.swirlRadius;
-  
-  if (currentLevel >= 4) {
-    targetX += (player.x - targetX) * 0.3;
-  }
-
-  anaconda.y += anaconda.speedY; 
-  anaconda.x += (targetX - anaconda.x) * 0.08;
-
-  // Fireballs from Anaconda on Level 4+
-  if (currentLevel >= 4) {
-    anaconda.fireTimer++;
-    if (anaconda.fireTimer >= 80) {
-      anaconda.fireTimer = 0;
-      let angle = Math.atan2(player.y - anaconda.y, player.x - anaconda.x);
-      enemyFireballs.push({ x: anaconda.x, y: anaconda.y, vx: Math.cos(angle) * 6, vy: Math.sin(angle) * 6, radius: 14, damage: 15 });
-    }
-  }
-
-  // Segments tracking
-  anaconda.segments[0] = { x: anaconda.x, y: anaconda.y };
-  for (let i = 1; i < anaconda.length; i++) {
-    let segPrev = anaconda.segments[i - 1];
-    let segCurr = anaconda.segments[i];
-    let sdx = segPrev.x - segCurr.x;
-    let sdy = segPrev.y - segCurr.y;
-    let sdist = Math.hypot(sdx, sdy);
-    let spacing = anaconda.scaleSize * 0.65;
-    if (sdist > spacing) {
-      segCurr.x = segPrev.x - (sdx / sdist) * spacing;
-      segCurr.y = segPrev.y - (sdy / sdist) * spacing;
-    }
-  }
-
-  // Crash detection
-  if (anaconda.y >= height - 140 || Math.hypot(anaconda.x - player.x, anaconda.y - player.y) < (anaconda.scaleSize + 20)) {
-    gameOver();
-    return;
-  }
-
-  // Enemy Fireballs Collision
-  for (let i = enemyFireballs.length - 1; i >= 0; i--) {
-    let fb = enemyFireballs[i];
-    fb.x += fb.vx;
-    fb.y += fb.vy;
-
-    if (Math.hypot(fb.x - player.x, fb.y - player.y) < 30) {
-      player.hp -= fb.damage;
-      playSound('hit');
-      document.getElementById('playerHpDisplay').innerText = Math.max(0, player.hp);
-      enemyFireballs.splice(i, 1);
-      if (player.hp <= 0) {
-        gameOver();
-        return;
-      }
-      continue;
-    }
-    if (fb.y > height || fb.x < 0 || fb.x > width) enemyFireballs.splice(i, 1);
-  }
-
-  // Bullet Collision
+  // Update Bullets
   for (let i = bullets.length - 1; i >= 0; i--) {
-    let b = bullets[i];
-    b.x += b.vx;
-    b.y += b.vy;
-
-    let hit = false;
-    for (let j = 0; j < anaconda.segments.length; j++) {
-      let seg = anaconda.segments[j];
-      if (Math.hypot(b.x - seg.x, b.y - seg.y) < anaconda.scaleSize + 10) {
-        anaconda.hp -= b.damage;
-        document.getElementById('bossHpDisplay').innerText = Math.max(0, anaconda.hp);
-        hit = true;
-        break;
-      }
-    }
-
-    if (hit) {
+    bullets[i].y += bullets[i].vy;
+    
+    // Collision check with Anaconda
+    if (Math.hypot(bullets[i].x - anaconda.x, bullets[i].y - anaconda.y) < 35) {
+      anaconda.hp -= 15;
+      document.getElementById('hp').innerText = Math.max(0, anaconda.hp);
       bullets.splice(i, 1);
-      if (anaconda.hp <= 0) initLevel(currentLevel + 1);
+
+      if (anaconda.hp <= 0) {
+        alert("YOU WON!");
+        location.reload();
+      }
       continue;
     }
 
-    if (b.y < 0) bullets.splice(i, 1);
+    if (bullets[i].y < 0) bullets.splice(i, 1);
+  }
+
+  // Update Anaconda Movement
+  anaconda.x += anaconda.dir * 2;
+  anaconda.y += anaconda.speedY;
+
+  if (anaconda.x < 40 || anaconda.x > width - 40) anaconda.dir *= -1;
+
+  if (anaconda.y > height - 140) {
+    gameActive = false;
+    alert("GAME OVER! Anaconda caught you.");
+    location.reload();
   }
 }
 
 function draw() {
-  ctx.fillStyle = '#050203';
+  ctx.fillStyle = '#111';
   ctx.fillRect(0, 0, width, height);
 
-  if (gameState === 'PLAYING') {
-    // Draw Enemy Fireballs
-    for (let fb of enemyFireballs) {
-      ctx.fillStyle = '#ff2200';
-      ctx.beginPath();
-      ctx.arc(fb.x, fb.y, fb.radius, 0, Math.PI * 2);
-      ctx.fill();
-    }
+  if (!gameActive) return;
 
-    // Draw Player Bullets
-    for (let b of bullets) {
-      ctx.fillStyle = b.flameColor;
-      ctx.fillRect(b.x - 3, b.y, 6, 16);
-    }
+  // Draw Player ("Suck")
+  ctx.fillStyle = '#00ffcc';
+  ctx.beginPath();
+  ctx.arc(player.x, player.y, 20, 0, Math.PI * 2);
+  ctx.fill();
 
-    // Draw Anaconda
-    for (let i = anaconda.segments.length - 1; i >= 0; i--) {
-      let seg = anaconda.segments[i];
-      let isHead = (i === 0);
-      let size = anaconda.scaleSize * (isHead ? 1.3 : 1.0);
-
-      ctx.fillStyle = isHead ? '#ff3333' : '#119933';
-      ctx.beginPath();
-      ctx.arc(seg.x, seg.y, size, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#000';
-      ctx.stroke();
-    }
-
-    // Draw Player - "Suck"
-    ctx.save();
-    ctx.translate(player.x, player.y);
-    ctx.fillStyle = '#ffdbac';
-    ctx.beginPath();
-    ctx.arc(0, -12, 12, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#1b3b1b';
-    ctx.fillRect(-10, 0, 20, 20);
-    ctx.fillStyle = '#222';
-    ctx.fillRect(-3, -25, 6, 25); // Gun
-    ctx.restore();
+  // Draw Bullets
+  ctx.fillStyle = '#ffcc00';
+  for (let b of bullets) {
+    ctx.fillRect(b.x - 3, b.y, 6, 12);
   }
 
-  requestAnimationFrame(draw);
+  // Draw Anaconda Head
+  ctx.fillStyle = '#ff2222';
+  ctx.beginPath();
+  ctx.arc(anaconda.x, anaconda.y, 30, 0, Math.PI * 2);
+  ctx.fill();
 }
 
-gameLoop();
 function gameLoop() {
   update();
   draw();
+  if (gameActive) requestAnimationFrame(gameLoop);
 }
 </script>
 </body>
